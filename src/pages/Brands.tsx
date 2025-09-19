@@ -8,7 +8,6 @@ import './Brands.css'
 
 export default function Brands() {
   const { t } = useLanguage()
-  const queryClient = useQueryClient()
   const [expandedBrands, setExpandedBrands] = useState<Set<string>>(new Set())
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
   const [showBrandModal, setShowBrandModal] = useState(false)
@@ -233,7 +232,6 @@ function BrandItem({
   onAddModel,
   onEditModel,
   onDeleteModel,
-  onShowCategoryModal,
   onShowModelModal,
   isDeleting
 }: {
@@ -254,7 +252,6 @@ function BrandItem({
   isDeleting: boolean
 }) {
   const { t } = useLanguage()
-  const queryClient = useQueryClient()
 
   const { data: categories = [] } = useQuery({
     queryKey: ['categories', brand.id],
@@ -465,7 +462,6 @@ function ModelItem({
 // Brand Modal Component
 function BrandModal({ brand, onClose, invalidateAllBrandQueries }: { brand: Brand | null; onClose: () => void; invalidateAllBrandQueries: () => void }) {
   const { t } = useLanguage()
-  const queryClient = useQueryClient()
   const [formData, setFormData] = useState<BrandFormData>({
     name: brand?.name || '',
     description: brand?.description || '',
@@ -560,7 +556,6 @@ function BrandModal({ brand, onClose, invalidateAllBrandQueries }: { brand: Bran
 // Category Modal Component
 function CategoryModal({ category, brand, onClose, invalidateAllBrandQueries }: { category: Category | null; brand: Brand | null; onClose: () => void; invalidateAllBrandQueries: () => void }) {
   const { t } = useLanguage()
-  const queryClient = useQueryClient()
   const [formData, setFormData] = useState<CategoryFormData>({
     brand_id: brand?.id || category?.brand_id || '',
     name: category?.name || '',
@@ -656,7 +651,6 @@ function CategoryModal({ category, brand, onClose, invalidateAllBrandQueries }: 
 // Model Modal Component
 function ModelModal({ model, category, onClose, invalidateAllBrandQueries }: { model: Model | null; category: Category | null; onClose: () => void; invalidateAllBrandQueries: () => void }) {
   const { t } = useLanguage()
-  const queryClient = useQueryClient()
   const [formData, setFormData] = useState<ModelFormData>({
     category_id: category?.id || model?.category_id || '',
     name: model?.name || '',

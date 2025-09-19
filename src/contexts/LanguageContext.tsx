@@ -16,7 +16,6 @@ const translations = {
   'nav.accessories': 'Accessoires',
   'nav.issue': 'Afgifte',
   'nav.installation': 'Installatie',
-  'radios.title': 'Radio\'s',
   'radios.add': 'Radio Toevoegen',
   'radios.edit': 'Bewerken',
   'radios.delete': 'Verwijderen',
@@ -184,12 +183,7 @@ const translations = {
   'radios.updateError': 'Fout bij bijwerken van radio',
 
   // Navigation
-  'nav.dashboard': 'Dashboard',
-  'nav.radios': 'Radio\'s',
-  'nav.accessories': 'Accessoires',
   'nav.brands': 'Merken',
-  'nav.issue': 'Afgifte',
-  'nav.installation': 'Installatie',
 }
 
 interface LanguageProviderProps {
