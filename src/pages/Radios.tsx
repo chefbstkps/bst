@@ -263,24 +263,107 @@ export default function Radios() {
           onImport={async (file: File) => {
             try {
               const text = await file.text()
-              const lines = text.split('\n')
+              const lines = text.split('\n').filter(line => line.trim()) // Remove empty lines
+              
+              if (lines.length < 2) {
+                alert('CSV bestand moet minimaal een header en één data rij bevatten.')
+                return
+              }
+              
+              const headers = lines[0].split(',').map(h => h.trim())
+              const expectedHeaders = ['ID', 'Merk', 'Model', 'Type', 'Serienummer', 'Alias', 'Afdeling', 'Registratiedatum', 'Opmerking']
+              
+              // Validate headers
+              const missingHeaders = expectedHeaders.filter(h => !headers.includes(h))
+              if (missingHeaders.length > 0) {
+                alert(`Ontbrekende kolommen in CSV: ${missingHeaders.join(', ')}`)
+                return
+              }
               
               const radiosToImport = []
+              const errors = []
+              const existingIds = new Set<string>()
+              const existingSerials = new Set<string>()
+              
+              // Get existing data for validation
+              const existingRadios = await RadioService.getAll()
+              existingRadios.forEach(radio => {
+                existingIds.add(radio.id)
+                existingSerials.add(radio.serienummer)
+              })
+              
+              // Process data rows
               for (let i = 1; i < lines.length; i++) {
                 const values = lines[i].split(',').map(v => v.trim())
-                if (values.length >= 8 && values[0]) { // Check if row has enough data
-                  radiosToImport.push({
-                    id: values[0],
-                    merk: values[1],
-                    model: values[2],
-                    type: values[3] as 'Portable' | 'Mobile' | 'Base',
-                    serienummer: values[4],
-                    alias: values[5],
-                    afdeling: values[6],
-                    registratiedatum: values[7] || new Date().toISOString().split('T')[0],
-                    opmerking: values[8] || ''
-                  })
+                
+                if (values.length < 8) {
+                  errors.push(`Rij ${i + 1}: Onvoldoende kolommen (${values.length}/8)`)
+                  continue
                 }
+                
+                const [id, merk, model, type, serienummer, alias, afdeling, registratiedatum, opmerking] = values
+                
+                // Validate ID
+                if (!id || id.length !== 4 || !/^\d{4}$/.test(id)) {
+                  errors.push(`Rij ${i + 1}: ID moet 4 cijfers zijn (${id})`)
+                  continue
+                }
+                
+                if (existingIds.has(id)) {
+                  errors.push(`Rij ${i + 1}: ID ${id} bestaat al`)
+                  continue
+                }
+                
+                // Validate serial number
+                if (!serienummer) {
+                  errors.push(`Rij ${i + 1}: Serienummer is verplicht`)
+                  continue
+                }
+                
+                if (existingSerials.has(serienummer)) {
+                  errors.push(`Rij ${i + 1}: Serienummer ${serienummer} bestaat al`)
+                  continue
+                }
+                
+                // Validate type
+                if (!['Portable', 'Mobile', 'Base'].includes(type)) {
+                  errors.push(`Rij ${i + 1}: Type moet Portable, Mobile of Base zijn (${type})`)
+                  continue
+                }
+                
+                // Validate required fields
+                if (!merk || !model || !alias || !afdeling) {
+                  errors.push(`Rij ${i + 1}: Merk, Model, Alias en Afdeling zijn verplicht`)
+                  continue
+                }
+                
+                radiosToImport.push({
+                  id,
+                  merk,
+                  model,
+                  type: type as 'Portable' | 'Mobile' | 'Base',
+                  serienummer,
+                  alias,
+                  afdeling,
+                  registratiedatum: registratiedatum || new Date().toISOString().split('T')[0],
+                  opmerking: opmerking || ''
+                })
+                
+                // Add to existing sets to prevent duplicates within the same import
+                existingIds.add(id)
+                existingSerials.add(serienummer)
+              }
+              
+              // Show errors if any
+              if (errors.length > 0) {
+                const errorMessage = `Import geannuleerd vanwege ${errors.length} fout(en):\n\n${errors.slice(0, 10).join('\n')}${errors.length > 10 ? `\n... en ${errors.length - 10} meer fouten` : ''}`
+                alert(errorMessage)
+                return
+              }
+              
+              if (radiosToImport.length === 0) {
+                alert('Geen geldige rijen gevonden om te importeren.')
+                return
               }
               
               // Import radios
@@ -359,7 +442,23 @@ function CSVImportExportModal({
   // Download CSV template
   const downloadTemplate = () => {
     const headers = ['ID', 'Merk', 'Model', 'Type', 'Serienummer', 'Alias', 'Afdeling', 'Registratiedatum', 'Opmerking']
-    const csvContent = headers.join(',') + '\n'
+    
+    // Sample data rows with unique IDs
+    const sampleData = [
+      ['2001', 'Motorola', 'DP4400', 'Portable', '426CPB2001', 'Recherche-01', 'Recherche Parbo', '2024-01-15', 'Nieuwe radio voor recherche team'],
+      ['2002', 'Motorola', 'DP4400', 'Portable', '426CPB2002', 'Recherche-02', 'Recherche Parbo', '2024-01-15', 'Reserve radio'],
+      ['2003', 'Motorola', 'APX8000', 'Mobile', '426CMB2001', 'Patrouille-01', 'Patrouille', '2024-01-20', 'Geïnstalleerd in voertuig 123'],
+      ['2004', 'Kenwood', 'NX-5200', 'Base', '426CBB2001', 'Base-01', 'Communicatie Centrum', '2024-01-25', 'Hoofdstation communicatie'],
+      ['2005', 'Motorola', 'DP4400', 'Portable', '426CPB2003', 'Recherche-03', 'Recherche Parbo', '2024-02-01', ''],
+      ['2006', 'Kenwood', 'NX-5200', 'Mobile', '426CMB2002', 'Patrouille-02', 'Patrouille', '2024-02-05', 'Geïnstalleerd in voertuig 456'],
+      ['2007', 'Motorola', 'APX8000', 'Portable', '426CPB2004', 'Recherche-04', 'Recherche Parbo', '2024-02-10', 'Nieuwe radio met GPS'],
+      ['2008', 'Kenwood', 'NX-5200', 'Base', '426CBB2002', 'Base-02', 'Communicatie Centrum', '2024-02-15', 'Backup station']
+    ]
+    
+    const csvContent = [
+      headers.join(','),
+      ...sampleData.map(row => row.join(','))
+    ].join('\n')
     
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
     const link = document.createElement('a')
@@ -431,7 +530,7 @@ function CSVImportExportModal({
           {/* Template Download */}
           <div className="csv-modal__section">
             <h3>📄 Template Downloaden</h3>
-            <p>Download een CSV template om de juiste format te zien.</p>
+            <p>Download een CSV template om de juiste format te zien. <strong>ID's moeten uniek zijn en bestaan uit 4 cijfers.</strong></p>
             <button
               onClick={downloadTemplate}
               className="btn btn--secondary"
@@ -443,7 +542,13 @@ function CSVImportExportModal({
           {/* Import Section */}
           <div className="csv-modal__section">
             <h3>📤 CSV Importeren</h3>
-            <p>Upload een CSV bestand om radio's te importeren.</p>
+            <p>Upload een CSV bestand om radio's te importeren. Het systeem controleert automatisch op:</p>
+            <ul style={{ margin: '0.5rem 0', paddingLeft: '1.5rem', fontSize: '0.9rem', color: '#666' }}>
+              <li>Unieke ID's (4 cijfers)</li>
+              <li>Unieke serienummers</li>
+              <li>Geldige radio types (Portable, Mobile, Base)</li>
+              <li>Verplichte velden</li>
+            </ul>
             
             {/* Drag and Drop Area */}
             <div

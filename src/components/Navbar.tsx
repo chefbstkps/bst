@@ -30,6 +30,13 @@ export default function Navbar() {
     <nav className="navbar">
       <div className="navbar__container">
         <div className="navbar__brand">
+          <Link to="/" className="navbar__logo-link">
+            <img 
+              src="/logobst.svg" 
+              alt="BST Logo" 
+              className="navbar__logo"
+            />
+          </Link>
           <h1 className="navbar__title">{t('app.title')}</h1>
         </div>
         
