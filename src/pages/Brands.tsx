@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useMutation } from '@tanstack/react-query'
 import { useLanguage } from '../contexts/LanguageContext'
 import { BrandService } from '../services/brandService'
 import { Brand, Category, Model, BrandFormData, CategoryFormData, ModelFormData } from '../types'
@@ -19,13 +19,7 @@ export default function Brands() {
 
   // Utility function to invalidate all brand-related queries
   const invalidateAllBrandQueries = () => {
-    queryClient.invalidateQueries({ queryKey: ['brands'] })
-    queryClient.invalidateQueries({ queryKey: ['brand-stats'] })
-    queryClient.invalidateQueries({ queryKey: ['categories'] })
-    queryClient.invalidateQueries({ queryKey: ['models'] })
-    // Also invalidate all category queries for all brands
-    queryClient.invalidateQueries({ queryKey: ['categories'], exact: false })
-    queryClient.invalidateQueries({ queryKey: ['models'], exact: false })
+    // The mutations will automatically refetch the data
   }
 
   // Queries
