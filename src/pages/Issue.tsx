@@ -4,8 +4,8 @@ import { useLanguage } from '../contexts/LanguageContext'
 import { IssueService } from '../services/issueService'
 import { RadioService } from '../services/radioService'
 import { AccessoryService } from '../services/accessoryService'
-import { Issue, IssueFormData, Radio, Accessory } from '../types'
-import { Plus, Edit, Trash2, Search, Upload, Radio as RadioIcon, Package } from 'lucide-react'
+import type { Issue, IssueFormData, Radio, Accessory } from '../types'
+import { Plus, Edit, Trash2, Search, Radio as RadioIcon, Package } from 'lucide-react'
 import './Issue.css'
 
 export default function Issue() {

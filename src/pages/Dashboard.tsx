@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useLanguage } from '../contexts/LanguageContext'
 import { DashboardService } from '../services/dashboardService'
-import { Radio, Package, Upload, Wrench, Clock, TrendingUp } from 'lucide-react'
+import { Radio, Package, Upload, Clock, TrendingUp } from 'lucide-react'
 import './Dashboard.css'
 
 export default function Dashboard() {
@@ -97,7 +97,7 @@ export default function Dashboard() {
               </h3>
             </div>
             <div className="card__body">
-              {stats?.recent_installations?.length > 0 ? (
+              {stats?.recent_installations && stats.recent_installations.length > 0 ? (
                 <div className="activity-list">
                   {stats.recent_installations.map((installation) => (
                     <div key={installation.id} className="activity-item">
@@ -129,7 +129,7 @@ export default function Dashboard() {
               </h3>
             </div>
             <div className="card__body">
-              {stats?.recent_issues?.length > 0 ? (
+              {stats?.recent_issues && stats.recent_issues.length > 0 ? (
                 <div className="activity-list">
                   {stats.recent_issues.map((issue) => (
                     <div key={issue.id} className="activity-item">
@@ -161,7 +161,7 @@ export default function Dashboard() {
               </h3>
             </div>
             <div className="card__body">
-              {stats?.recent_registrations?.length > 0 ? (
+              {stats?.recent_registrations && stats.recent_registrations.length > 0 ? (
                 <div className="activity-list">
                   {stats.recent_registrations.map((radio) => (
                     <div key={radio.id} className="activity-item">

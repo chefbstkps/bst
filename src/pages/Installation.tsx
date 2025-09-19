@@ -4,8 +4,8 @@ import { useLanguage } from '../contexts/LanguageContext'
 import { InstallationService } from '../services/installationService'
 import { RadioService } from '../services/radioService'
 import { AccessoryService } from '../services/accessoryService'
-import { Installation, InstallationFormData, Radio, Accessory } from '../types'
-import { Plus, Edit, Trash2, Search, Wrench, Radio as RadioIcon, Package, Car } from 'lucide-react'
+import type { Installation, InstallationFormData, Radio, Accessory } from '../types'
+import { Plus, Edit, Trash2, Search, Radio as RadioIcon, Package, Car } from 'lucide-react'
 import './Installation.css'
 
 export default function Installation() {

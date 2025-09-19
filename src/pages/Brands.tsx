@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useLanguage } from '../contexts/LanguageContext'
 import { BrandService } from '../services/brandService'
-import { Brand, Category, Model, BrandFormData, CategoryFormData, ModelFormData, BrandStats } from '../types'
+import { Brand, Category, Model, BrandFormData, CategoryFormData, ModelFormData } from '../types'
 import { Plus, Edit, Trash2, ChevronRight, ChevronDown } from 'lucide-react'
 import './Brands.css'
 
@@ -170,7 +170,6 @@ export default function Brands() {
               onAddModel={setSelectedCategory}
               onEditModel={setSelectedModel}
               onDeleteModel={handleDeleteModel}
-              onShowCategoryModal={setShowCategoryModal}
               onShowModelModal={setShowModelModal}
               isDeleting={isDeleting}
             />
@@ -251,7 +250,6 @@ function BrandItem({
   onAddModel: (category: Category) => void
   onEditModel: (model: Model) => void
   onDeleteModel: (model: Model) => void
-  onShowCategoryModal: (show: boolean) => void
   onShowModelModal: (show: boolean) => void
   isDeleting: boolean
 }) {

@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useLanguage } from '../contexts/LanguageContext'
 import { RadioService } from '../services/radioService'
-import { RadioHistory } from '../types'
 import { ArrowLeft, Edit, Trash2, Battery, Wrench, Building, Tag, Hash, Upload, Car } from 'lucide-react'
 import './RadioDetails.css'
 
@@ -493,7 +492,6 @@ function BatteryReplacementModal({
   onClose: () => void
   onSubmit: (date: string, notes: string) => void 
 }) {
-  const { t } = useLanguage()
   const [date, setDate] = useState(new Date().toISOString().split('T')[0])
   const [notes, setNotes] = useState('')
 
@@ -567,7 +565,6 @@ function ServiceModal({
   onClose: () => void
   onSubmit: (date: string, notes: string) => void 
 }) {
-  const { t } = useLanguage()
   const [date, setDate] = useState(new Date().toISOString().split('T')[0])
   const [notes, setNotes] = useState('')
 
@@ -643,7 +640,6 @@ function IDChangeModal({
   onSubmit: (newId: string, date: string, notes: string) => void
   currentId: string
 }) {
-  const { t } = useLanguage()
   const [newId, setNewId] = useState('')
   const [date, setDate] = useState(new Date().toISOString().split('T')[0])
   const [notes, setNotes] = useState('')
@@ -735,7 +731,6 @@ function AliasChangeModal({
   onSubmit: (newAlias: string, date: string, notes: string) => void
   currentAlias: string
 }) {
-  const { t } = useLanguage()
   const [newAlias, setNewAlias] = useState('')
   const [date, setDate] = useState(new Date().toISOString().split('T')[0])
   const [notes, setNotes] = useState('')
@@ -826,7 +821,6 @@ function DepartmentChangeModal({
   onSubmit: (newDepartment: string, date: string, notes: string) => void
   currentDepartment: string
 }) {
-  const { t } = useLanguage()
   const [newDepartment, setNewDepartment] = useState('')
   const [date, setDate] = useState(new Date().toISOString().split('T')[0])
   const [notes, setNotes] = useState('')

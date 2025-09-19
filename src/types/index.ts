@@ -38,6 +38,7 @@ export interface Accessory {
   merk: string
   model: string
   serienummer?: string
+  alias?: string
   opmerking?: string
   created_at: string
   updated_at: string
